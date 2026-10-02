@@ -1,48 +1,61 @@
-package com.davidswift.cardflow.application.domain;
+package com.davidswift.cardflow.application;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 public class Applicant {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @Column(nullable = false, updatable = false)
+    private final UUID uuid;
+
+    @Column(nullable = false)
     private String firstName;
 
-    @NotNull
+    @Column(nullable = false)
     private String lastName;
 
-    @NotNull
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, updatable = false)
     private String ssn;
 
-    @NotNull
+    @Column(nullable = false)
     private String addressLine1;
+
     private String addressLine2;
 
-    @NotNull
+    @Column(nullable = false)
     private String city;
 
-    @NotNull
+    @Column(nullable = false)
     private String state;
 
     @NotNull
+    @Column(nullable = false)
     private String postalCode;
 
-    @NotNull
+    @Column(nullable = false)
     private String phone;
+
+    /**
+     *
+     */
+    public Applicant() {
+        uuid = UUID.randomUUID();
+    }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public UUID getUuid() {
+        return uuid;
     }
 
     public String getFirstName() {
@@ -120,27 +133,19 @@ public class Applicant {
     @Override
     public String toString() {
         return "Applicant{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", addressLine1='" + addressLine1 + '\'' +
-                ", addressLine2='" + addressLine2 + '\'' +
-                ", city='" + city + '\'' +
-                ", state='" + state + '\'' +
-                ", postalCode='" + postalCode + '\'' +
-                ", phone='" + phone + '\'' +
+                "uuid=" + uuid +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Applicant applicant)) return false;//pattern variable?
-        return Objects.equals(ssn, applicant.ssn);
+        if (o == null || getClass() != o.getClass()) return false;
+        Applicant applicant = (Applicant) o;
+        return Objects.equals(getUuid(), applicant.getUuid());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ssn);
+        return Objects.hashCode(getUuid());
     }
 }
