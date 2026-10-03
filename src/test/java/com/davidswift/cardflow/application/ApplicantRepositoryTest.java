@@ -7,8 +7,11 @@ import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabas
 import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import com.davidswift.cardflow.TestcontainersConfiguration;
+import org.springframework.dao.DataIntegrityViolationException;
 
+import static com.davidswift.cardflow.application.ApplicantTestHelper.createApplicant;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) //DO NOT USE H2
@@ -29,11 +32,12 @@ public class ApplicantRepositoryTest {
 
         Applicant saved = applicantRepository.save(applicant);
         assertThat(saved.getId()).isNotNull();
+        assertThat(saved).usingRecursiveComparison().isEqualTo(applicant);
     }
 
     @Test
     void givenApplicant_whenUpdated_thenUpdatesArePersisted() {
-        Applicant applicant = ApplicantRepositoryTest.createApplicant();
+        Applicant applicant = createApplicant();
         assertThat(applicant.getFirstName()).isEqualTo("firstName");
         Long id = applicantRepository.save(applicant).getId();
 
@@ -47,19 +51,13 @@ public class ApplicantRepositoryTest {
         assertThat(found.getFirstName()).isEqualTo("FIRSTNAME");
     }
 
-    private static Applicant createApplicant() {
-        Applicant applicant = new Applicant();
-
-        applicant.setFirstName("firstName");
-        applicant.setLastName("lastName");
-        applicant.setSsn("111111111");
-        applicant.setAddressLine1("addressLine1");
-        applicant.setAddressLine2("addressLine2");
-        applicant.setCity("city");
-        applicant.setState("state");
-        applicant.setPostalCode("postalCode");
-        applicant.setPhone("1234567890");
-
-        return applicant;
+    @Test
+    void givenApplicantWithExitingSsn_whenSaved_dataIntegrityExceptionThrown() {
+        Applicant applicant = createApplicant();
+        applicantRepository.save(applicant);
+        Applicant applicant2 = createApplicant();
+        assertThat(applicant).extracting(Applicant::getSsn).isEqualTo(applicant2.getSsn());
+        assertThatThrownBy(() -> applicantRepository.saveAndFlush(applicant2))
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 }

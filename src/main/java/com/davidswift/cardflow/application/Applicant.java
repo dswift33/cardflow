@@ -1,9 +1,6 @@
 package com.davidswift.cardflow.application;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import org.hibernate.proxy.HibernateProxy;
-
 import java.util.Objects;
 import java.util.UUID;
 
@@ -42,9 +39,6 @@ public class Applicant {
     @Column(nullable = false)
     private String phone;
 
-    /**
-     *
-     */
     public Applicant() {
         uuid = UUID.randomUUID();
     }

@@ -22,9 +22,6 @@ public class Application {
     @Column(nullable = false)
     private ApplicationStatus status = ApplicationStatus.PENDING;
 
-    /**
-     *
-     */
     public Application() {
         uuid = UUID.randomUUID();
     }

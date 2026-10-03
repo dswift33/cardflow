@@ -1,6 +1,7 @@
 package com.davidswift.cardflow.application;
 
 import com.davidswift.cardflow.TestcontainersConfiguration;
+import org.hibernate.proxy.HibernateProxy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabas
 import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
+import static com.davidswift.cardflow.application.ApplicantTestHelper.createApplicant;
 import static org.assertj.core.api.Assertions.assertThat;
 import java.util.UUID;
 
@@ -28,7 +30,7 @@ public class ApplicationRepositoryTest {
 
 
     @Test
-    void testApplication_whenSaved_canBeRead() {
+    void testGivenApplication_whenSaved_canBeRead() {
         Applicant applicant = applicantRepository.save(createApplicant());
 
         Application application = new Application();
@@ -42,34 +44,34 @@ public class ApplicationRepositoryTest {
         entityManager.clear();
 
         Application loadedApplication = applicationRepository.getReferenceById(applicationId);//get a proxy
-        System.out.println("loadedApplication class = " + loadedApplication.getClass());
+        assertThat(loadedApplication).isInstanceOf(HibernateProxy.class);
         assertThat(application).isEqualTo(loadedApplication);
         assertThat(loadedApplication).isEqualTo(application);
         assertThat(loadedApplication.getUuid()).isEqualTo(applicationUuid);
+    }
 
+    @Test
+    void testGivenApplication_whenApplicantFetched_equalsAndHashcodeSucceed() {
+        Applicant applicant = applicantRepository.save(createApplicant());
+
+        Application application = new Application();
+        application.setApplicant(applicant);
+        applicationRepository.save(application);
+
+        Long applicationId = application.getId();
+        UUID applicationUuid = application.getUuid();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        Application loadedApplication = applicationRepository.findById(applicationId).orElseThrow();
         Applicant loadedApplicant = loadedApplication.getApplicant();
+
         //equality
         assertThat(applicant).isEqualTo(loadedApplicant);
         assertThat(loadedApplicant).isEqualTo(applicant);
         //hashcode
         assertThat(loadedApplicant.hashCode()).isEqualTo(applicant.hashCode());
         assertThat(applicant.hashCode()).isEqualTo(loadedApplicant.hashCode());
-
-    }
-
-    private static Applicant createApplicant() {
-        Applicant applicant = new Applicant();
-
-        applicant.setFirstName("firstName");
-        applicant.setLastName("lastName");
-        applicant.setSsn("111111111");
-        applicant.setAddressLine1("addressLine1");
-        applicant.setAddressLine2("addressLine2");
-        applicant.setCity("city");
-        applicant.setState("state");
-        applicant.setPostalCode("postalCode");
-        applicant.setPhone("1234567890");
-
-        return applicant;
     }
 }

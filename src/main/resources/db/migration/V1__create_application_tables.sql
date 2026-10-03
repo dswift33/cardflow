@@ -19,3 +19,4 @@ CREATE TABLE application (
     status VARCHAR(64) NOT NULL CHECK (status = 'PENDING' OR status = 'APPROVED' OR status = 'DENIED'),
     FOREIGN KEY (applicant_id) REFERENCES applicant(id)
 );
+CREATE INDEX idx_application_applicant_id ON application (applicant_id);
