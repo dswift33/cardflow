@@ -14,7 +14,7 @@ public class Applicant {
     private Long id;
 
     @Column(nullable = false, updatable = false)
-    private final UUID uuid;
+    private UUID uuid;
 
     @Column(nullable = false)
     private String firstName;
@@ -36,7 +36,6 @@ public class Applicant {
     @Column(nullable = false)
     private String state;
 
-    @NotNull
     @Column(nullable = false)
     private String postalCode;
 
@@ -139,9 +138,9 @@ public class Applicant {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Applicant applicant = (Applicant) o;
-        return Objects.equals(getUuid(), applicant.getUuid());
+        if (this == o) return true;
+        if (!(o instanceof Applicant other)) return false;
+        return Objects.equals(getUuid(), other.getUuid());
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.davidswift.cardflow.application;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -23,8 +22,8 @@ public class ApplicantRepositoryTest {
     private TestEntityManager entityManager;
 
     @Test
-    void givenUser_whenSaved_thenCanBeFoundById() {
-        Applicant applicant = ApplicantRepositoryTest.createApplicant();
+    void givenApplicant_whenSaved_thenCanBeFoundById() {
+        Applicant applicant = createApplicant();
 
         assertThat(applicant.getUuid()).isNotNull();
 
@@ -33,7 +32,7 @@ public class ApplicantRepositoryTest {
     }
 
     @Test
-    void givenUser_whenUpdated_thenUpdatesArePersisted() {
+    void givenApplicant_whenUpdated_thenUpdatesArePersisted() {
         Applicant applicant = ApplicantRepositoryTest.createApplicant();
         assertThat(applicant.getFirstName()).isEqualTo("firstName");
         Long id = applicantRepository.save(applicant).getId();

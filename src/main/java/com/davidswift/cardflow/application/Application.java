@@ -12,14 +12,15 @@ public class Application {
     private Long id;
 
     @Column(nullable = false, updatable = false)
-    private final UUID uuid;
+    private UUID uuid;
 
-    @ManyToOne(fetch = FetchType.LAZY)//defaults to eager; UGH
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)//defaults to eager; UGH
+    @JoinColumn(nullable = false)
     private Applicant applicant;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ApplicationStatus status;
+    private ApplicationStatus status = ApplicationStatus.PENDING;
 
     /**
      *
@@ -61,9 +62,9 @@ public class Application {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Application that = (Application) o;
-        return Objects.equals(getUuid(), that.getUuid());
+        if (this == o) return true;
+        if (!(o instanceof Application other)) return false;
+        return Objects.equals(getUuid(), other.getUuid());
     }
 
     @Override
