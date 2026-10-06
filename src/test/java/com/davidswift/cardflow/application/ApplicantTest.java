@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ApplicantTest {
     @Test
-    void givenApplicant_whenComparedWithSame_thenSuccess() {
+    void givenApplicant_whenEqualsCalledWithSame_thenSuccess() {
         Applicant a = ApplicantTestHelper.createApplicant();
         Applicant b = ApplicantTestHelper.createApplicant();
         ReflectionTestUtils.setField(b, "uuid", a.getUuid());
@@ -19,7 +19,15 @@ public class ApplicantTest {
         assertThat(a.hashCode()).isEqualTo(b.hashCode());
 
         Applicant c = ApplicantTestHelper.createApplicant();
+        assertThat(a.getUuid()).isNotEqualTo(c.getUuid());
         assertThat(a.equals(c)).isFalse();
+    }
+
+    @Test
+    void givenApplicant_whenFieldsChange_hashcodeSame() {
+        Applicant a = ApplicantTestHelper.createApplicant();
+        Applicant b = ApplicantTestHelper.createApplicant();
+        ReflectionTestUtils.setField(b, "uuid", a.getUuid());
 
         int hash = a.hashCode();
         a.setFirstName("John");
