@@ -8,8 +8,6 @@ import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
 public record ApplicantRequest(
-    @NotNull
-    UUID uuid,
 
     @NotBlank
     @Size(max = 128)
@@ -20,8 +18,8 @@ public record ApplicantRequest(
     String lastName,
 
     @NotBlank
-    @Pattern(regexp = "regexp = \"^(?:(?!000|666|9\\\\d{2})\\\\d{3}-(?!00)\\\\d{2}-(?!0000)\\\\d{4}|(?:(?!000|666|9\\\\d{2})\\\\d{3}(?!00)\\\\d{2}(?!0000)\\\\d{4}))$\"\n",
-             message = "Invalid SSN format. Must be AAA-GG-SSSS or AAGGSSSS with valid digits.")
+    @Pattern(regexp = "^\\d{9}$",
+             message = "Invalid SSN format. Must be AAGGSSSS with valid digits.")
     String ssn,
 
     @NotBlank

@@ -24,7 +24,5 @@ public class ApplicationTest {
         assertThat(a.equals(null)).isFalse();
         assertThat(a.equals("string")).isFalse();
         assertThat(a.hashCode()).isEqualTo(b.hashCode());
-
-
     }
 }
