@@ -17,8 +17,7 @@ public class ApplicantRequestTest {
 
     @Test
     void validApplicant_hasNoViolations() {
-        ApplicantRequest request = ApplicantRequestBuilder.builder().build();
-        Set<ConstraintViolation<ApplicantRequest>> violations = validator.validate(request);
+        Set<ConstraintViolation<ApplicantRequest>> violations = validator.validate(ApplicantRequestBuilder.builder().build());
         assertThat(violations).isEmpty();
     }
 
