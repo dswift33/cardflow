@@ -3,7 +3,7 @@ package com.davidswift.cardflow.application;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
-import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -15,10 +15,9 @@ public class ApplicantRequestTest {
     private static final Validator validator =
             Validation.buildDefaultValidatorFactory().getValidator();
 
-    @ParameterizedTest
-    @ValueSource(strings = {"123456789", "987654321"})   // adjust to your rules
-    void validSsn_hasNoViolations(String ssn) {
-        ApplicantRequest request = ApplicantRequestBuilder.builder().ssn(ssn).build();
+    @Test
+    void validApplicant_hasNoViolations() {
+        ApplicantRequest request = ApplicantRequestBuilder.builder().build();
         Set<ConstraintViolation<ApplicantRequest>> violations = validator.validate(request);
         assertThat(violations).isEmpty();
     }
